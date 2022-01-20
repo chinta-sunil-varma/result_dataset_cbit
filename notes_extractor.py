@@ -18,10 +18,11 @@ def getFilename_fromCd(cd):
     return fname[0]
 
 
-headers={'user-agent':'<your header goes here' }
+headers={'User-Agent': 'python-requests/2.26.0'}
 
 with requests.Session() as s:
-    url="https://learning.cbit.org.in/"
+
+    url='https://learning.cbit.org.in/'
     g=s.get(url,headers=headers)
     src=g.content
 
@@ -85,7 +86,7 @@ with requests.Session() as s:
             if(inpu==1):
                 inpu=int(input('enter the serial no of the file you want to download'))
                 url = lis[inpu].find('a').attrs['href']
-                print(url)
+
                 h = requests.head(url, allow_redirects=True)
                 header = h.headers
                 content_type = header.get('content-type')
@@ -96,7 +97,7 @@ with requests.Session() as s:
                 elif ('html' in content_type.lower()):
                     pass
                 if(status==0):
-                    print('This is not a downloadable file')
+                    print(lis[inpu].find('a').text+' status- This is not a downloadable file')
                 if(status==1):
 
                     r = s.get(url, allow_redirects=True)
@@ -113,6 +114,7 @@ with requests.Session() as s:
 
                     with open(file,'wb') as f:
                         f.write(r.content)
+                        print(lis[inpu].find('a').text + ' status - succesfully downloaded')
 
 
             if (inpu == 2):
