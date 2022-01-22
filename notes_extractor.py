@@ -1,8 +1,8 @@
 import sys
-
 import requests
 from bs4 import BeautifulSoup
 import re
+import os
 
 
 
@@ -26,14 +26,15 @@ with requests.Session() as s:
     g=s.get(url,headers=headers)
     src=g.content
 
-    soup=BeautifulSoup(src,'html.parser')
+    soup=BeautifulSoup(src,'lxml')
     lis=soup.find_all('input',{'type':'hidden'})
 
     var=lis[0].attrs['value']
-    payload = {'username': '', 'password': '', 'logintoken': var} #give here your original lms credentials
+    payload = {'username': '160120737114', 'password': 'Wasdijkl123@', 'logintoken': var} #give here your original lms credentials
     post = s.post('https://learning.cbit.org.in/login/index.php', data=payload)
     while(1):
         a= input('enter your course name to fetch the details')
+        course_name=a
         course_payload={'areaids':'core_course-course','q':a}
         course_post=s.get('https://learning.cbit.org.in/course/search.php',params=course_payload)
         with open('file.html', 'w') as obj:
@@ -61,6 +62,7 @@ with requests.Session() as s:
             output.append(a)
             count+=1
         # print(output)
+        # print(len(output))
         if(count!=0):
             choice=int(input('from above list of courses select the desired course to view its notes '))
             url=output[choice].find('a')
@@ -70,6 +72,7 @@ with requests.Session() as s:
              obj.write(java.text)
             parse=BeautifulSoup(java.content,'lxml')
             lis=parse.find_all(class_='activity resource modtype_resource')
+            # print(len(lis))
 
             notes_count=0
             if(lis):
@@ -118,7 +121,11 @@ with requests.Session() as s:
 
 
             if (inpu == 2):
-                for inpu in range(len(lis)-1):
+                if(os.path.isdir(course_name)):
+                    pass
+                else:
+                    os.mkdir(course_name)
+                for inpu in range(len(lis)):
                     url = lis[inpu].find('a').attrs['href']
 
                     h = requests.head(url, allow_redirects=True)
@@ -136,9 +143,9 @@ with requests.Session() as s:
                         r = s.get(url, allow_redirects=True)
                         # with open('file1.pptx','wb') as f:
                         #   f.write(r.content)
-                        filename = getFilename_fromCd(r.headers.get('content-disposition')).strip().replace(' ', '')
+                        filename = getFilename_fromCd(r.headers.get('content-disposition')).strip()
 
-                        arr = filename[1:len(filename) - 1]
+                        arr = course_name+'/'+filename[1:len(filename) - 1]
 
                         with open(arr, 'wb') as f:
                             f.write(r.content)
