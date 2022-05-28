@@ -6,6 +6,7 @@ import os
 
 
 
+
 def getFilename_fromCd(cd):
     """
     Get filename from content-disposition
@@ -38,7 +39,7 @@ with requests.Session() as s:
         course_payload={'areaids':'core_course-course','q':a}
         course_post=s.get('https://learning.cbit.org.in/course/search.php',params=course_payload)
         with open('file.html', 'w') as obj:
-          obj.write(course_post.text)
+           obj.write(course_post.text)
         parse=BeautifulSoup(course_post.content,'lxml')
         count=0
         output=[]
@@ -68,8 +69,8 @@ with requests.Session() as s:
             url=output[choice].find('a')
 
             java=s.get(url.attrs['href'])
-            with open('file.html', 'w') as obj:
-             obj.write(java.text)
+            # with open('file.html', 'w') as obj:
+            #  obj.write(java.text)
             parse=BeautifulSoup(java.content,'lxml')
             lis=parse.find_all(class_='activity resource modtype_resource')
             # print(len(lis))
